@@ -18,6 +18,9 @@ package br.com.edonde.sunshine.data;
 import android.net.Uri;
 import android.test.AndroidTestCase;
 
+import br.com.edonde.sunshine.data.WeatherContract.LocationEntry;
+import br.com.edonde.sunshine.data.WeatherContract.WeatherEntry;
+
 /*
     Uncomment this class when you are ready to test your UriMatcher.  Note that this class utilizes
     constants that are declared with package protection inside of the UriMatcher, which is why
@@ -30,11 +33,11 @@ public class TestUriMatcher extends AndroidTestCase {
     private static final long TEST_LOCATION_ID = 10L;
 
     // content://com.example.android.sunshine.app/weather"
-    private static final Uri TEST_WEATHER_DIR = WeatherContract.WeatherEntry.CONTENT_URI;
-    private static final Uri TEST_WEATHER_WITH_LOCATION_DIR = WeatherContract.WeatherEntry.buildWeatherLocation(LOCATION_QUERY);
-    private static final Uri TEST_WEATHER_WITH_LOCATION_AND_DATE_DIR = WeatherContract.WeatherEntry.buildWeatherLocationWithDate(LOCATION_QUERY, TEST_DATE);
+    private static final Uri TEST_WEATHER_DIR = WeatherEntry.CONTENT_URI;
+    private static final Uri TEST_WEATHER_WITH_LOCATION_DIR = WeatherEntry.buildWeatherLocation(LOCATION_QUERY);
+    private static final Uri TEST_WEATHER_WITH_LOCATION_AND_DATE_DIR = WeatherEntry.buildWeatherLocationWithDate(LOCATION_QUERY, TEST_DATE);
     // content://com.example.android.sunshine.app/location"
-    private static final Uri TEST_LOCATION_DIR = WeatherContract.LocationEntry.CONTENT_URI;
+    private static final Uri TEST_LOCATION_DIR = LocationEntry.CONTENT_URI;
 
     /*
         Students: This function tests that your UriMatcher returns the correct integer value

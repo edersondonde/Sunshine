@@ -20,8 +20,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.test.AndroidTestCase;
 
-import com.example.android.sunshine.app.data.WeatherContract.LocationEntry;
-import com.example.android.sunshine.app.data.WeatherContract.WeatherEntry;
+import br.com.edonde.sunshine.data.WeatherContract.LocationEntry;
+import br.com.edonde.sunshine.data.WeatherContract.WeatherEntry;
 
 /*
     Note: This is not a complete set of tests of the Sunshine ContentProvider, but it does test
@@ -437,16 +437,16 @@ public class TestProvider extends AndroidTestCase {
 
         for ( int i = 0; i < BULK_INSERT_RECORDS_TO_INSERT; i++, currentTestDate+= millisecondsInADay ) {
             ContentValues weatherValues = new ContentValues();
-            weatherValues.put(WeatherContract.WeatherEntry.COLUMN_LOC_KEY, locationRowId);
-            weatherValues.put(WeatherContract.WeatherEntry.COLUMN_DATE, currentTestDate);
-            weatherValues.put(WeatherContract.WeatherEntry.COLUMN_DEGREES, 1.1);
-            weatherValues.put(WeatherContract.WeatherEntry.COLUMN_HUMIDITY, 1.2 + 0.01 * (float) i);
-            weatherValues.put(WeatherContract.WeatherEntry.COLUMN_PRESSURE, 1.3 - 0.01 * (float) i);
-            weatherValues.put(WeatherContract.WeatherEntry.COLUMN_MAX_TEMP, 75 + i);
-            weatherValues.put(WeatherContract.WeatherEntry.COLUMN_MIN_TEMP, 65 - i);
-            weatherValues.put(WeatherContract.WeatherEntry.COLUMN_SHORT_DESC, "Asteroids");
-            weatherValues.put(WeatherContract.WeatherEntry.COLUMN_WIND_SPEED, 5.5 + 0.2 * (float) i);
-            weatherValues.put(WeatherContract.WeatherEntry.COLUMN_WEATHER_ID, 321);
+            weatherValues.put(WeatherEntry.COLUMN_LOC_KEY, locationRowId);
+            weatherValues.put(WeatherEntry.COLUMN_DATE, currentTestDate);
+            weatherValues.put(WeatherEntry.COLUMN_DEGREES, 1.1);
+            weatherValues.put(WeatherEntry.COLUMN_HUMIDITY, 1.2 + 0.01 * (float) i);
+            weatherValues.put(WeatherEntry.COLUMN_PRESSURE, 1.3 - 0.01 * (float) i);
+            weatherValues.put(WeatherEntry.COLUMN_MAX_TEMP, 75 + i);
+            weatherValues.put(WeatherEntry.COLUMN_MIN_TEMP, 65 - i);
+            weatherValues.put(WeatherEntry.COLUMN_SHORT_DESC, "Asteroids");
+            weatherValues.put(WeatherEntry.COLUMN_WIND_SPEED, 5.5 + 0.2 * (float) i);
+            weatherValues.put(WeatherEntry.COLUMN_WEATHER_ID, 321);
             returnContentValues[i] = weatherValues;
         }
         return returnContentValues;

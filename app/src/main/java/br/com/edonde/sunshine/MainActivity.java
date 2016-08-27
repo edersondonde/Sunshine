@@ -24,19 +24,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Log.v(LOG_TAG, "Executing onCreate");
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Log.v(LOG_TAG, "Executing onStart");
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.v(LOG_TAG, "Executing onResume");
     }
 
     @Override
@@ -78,28 +65,10 @@ public class MainActivity extends AppCompatActivity {
 
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(geoLocation);
-        if(intent.resolveActivity(getPackageManager()) != null) {
+        if (intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);
         } else {
-            Log.d(LOG_TAG, "Couldn't call "+ location + ", no receiving apps installed!");
+            Log.d(LOG_TAG, "Couldn't call " + location + ", no receiving apps installed!");
         }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Log.v(LOG_TAG, "Executing onPause");
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Log.v(LOG_TAG, "Executing onStop");
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.v(LOG_TAG, "Executing onDestroy");
     }
 }

@@ -38,6 +38,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="br.com.edonde.sunshine.MainActivity" />
         </activity>
+        <provider
+            android:authorities="br.com.edonde.sunshine"
+            android:name="br.com.edonde.sunshine.data.WeatherProvider"/>
     </application>
 
 </manifest>

@@ -17,6 +17,9 @@ import android.view.MenuItem;
 public class MainActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
+    private final String FORECASTFRAGMENT_TAG = "FFTAG";
+
+    private String location;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +27,28 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        location = Utility.getPreferredLocation(this);
+
+       if(savedInstanceState == null) {
+             getSupportFragmentManager().beginTransaction()
+                    .add(R.id.container, new ForecastFragment(), FORECASTFRAGMENT_TAG)
+                    .commit();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        final String newLocation = Utility.getPreferredLocation(this);
+        if (newLocation != null && !newLocation.equals(this.location)) {
+            ForecastFragment ff = (ForecastFragment) getSupportFragmentManager()
+                    .findFragmentByTag(FORECASTFRAGMENT_TAG);
+            if (ff != null) {
+                ff.onLocationChanged();
+            }
+            this.location = newLocation;
+        }
     }
 
     @Override

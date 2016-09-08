@@ -3,10 +3,10 @@ package br.com.edonde.sunshine;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -22,8 +22,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import br.com.edonde.sunshine.data.WeatherContract;
 import br.com.edonde.sunshine.data.WeatherContract.WeatherEntry;
 
@@ -33,6 +31,8 @@ import br.com.edonde.sunshine.data.WeatherContract.WeatherEntry;
 public class DetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int DETAIL_LOADER = 0;
+    public static final String DETAIL_URI = "URI";
+    private static final String HASHTAG = "#SunshineApp";
 
     private static final String[] DETAIL_COLUMNS = {
             WeatherEntry.TABLE_NAME + "." + WeatherEntry._ID,
@@ -66,7 +66,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private static final String LOG_TAG = DetailFragment.class.getSimpleName();
     private ShareActionProvider shareProvider;
     private String forecast;
-    private final String HASHTAG = "#SunshineApp";
+    private Uri uri;
+
 
     private ImageView mIconView;
     private TextView mFriendlyDateView;
@@ -94,7 +95,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
         final MenuItem menuItem = menu.findItem(R.id.action_share);
         shareProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
-        Log.v(LOG_TAG, "Share provider: "+ shareProvider);
         if (shareProvider != null) {
             Intent intent = createShareForecastIntent();
             this.shareProvider.setShareIntent(intent);
@@ -115,6 +115,11 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            this.uri = arguments.getParcelable(DetailFragment.DETAIL_URI);
+        }
+
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
         mIconView = (ImageView) rootView.findViewById(R.id.detail_icon);
         mDateView = (TextView) rootView.findViewById(R.id.detail_date_textview);
@@ -130,19 +135,28 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-
-
-        Intent intent = getActivity().getIntent();
-        if (intent == null) {
-            return null;
+        Loader<Cursor> cursorLoader = null;
+        if (uri != null) {
+            cursorLoader = new CursorLoader(
+                    getActivity(),
+                    uri,
+                    DETAIL_COLUMNS,
+                    null,
+                    null,
+                    null);
         }
-        return new CursorLoader(
-                getActivity(),
-                intent.getData(),
-                DETAIL_COLUMNS,
-                null,
-                null,
-                null);
+        return cursorLoader;
+    }
+
+    void onLocationChanged( String newLocation ) {
+        // replace the uri, since the location has changed
+        Uri uri = this.uri;
+        if (null != uri) {
+            long date = WeatherContract.WeatherEntry.getDateFromUri(uri);
+            Uri updatedUri = WeatherContract.WeatherEntry.buildWeatherLocationWithDate(newLocation, date);
+            this.uri = updatedUri;
+            getLoaderManager().restartLoader(DETAIL_LOADER, null, this);
+        }
     }
 
     @Override

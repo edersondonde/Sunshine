@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,6 +30,7 @@ import br.com.edonde.sunshine.data.WeatherContract.WeatherEntry;
 public class ForecastFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int FORECAST_LOADER = 0;
+    private static final String SELECTED_KEY = "selected_position";
 
     private static final String[] FORECAST_COLUMNS = {
             // In this case the id needs to be fully qualified with a table name, since
@@ -61,6 +63,8 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     static final int COL_COORD_LONG = 8;
 
     private ForecastAdapter forecastAdapter;
+    private int position = ListView.INVALID_POSITION;
+    private ListView listView;
 
     /**
      * A callback interface that all activities containing this fragment must
@@ -121,11 +125,11 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                             final Bundle savedInstanceState) {
         forecastAdapter = new ForecastAdapter(getActivity(), null, 0);
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        ListView listView = (ListView) rootView.findViewById(R.id.list_view_forecast);
+        listView = (ListView) rootView.findViewById(R.id.list_view_forecast);
         listView.setAdapter(forecastAdapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -142,8 +146,12 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                                     locationSettings, cursor.getLong(COL_WEATHER_DATE))
                             );
                 }
+                ForecastFragment.this.position = position;
             }
         });
+        if (savedInstanceState != null && savedInstanceState.containsKey(SELECTED_KEY)) {
+            position = savedInstanceState.getInt(SELECTED_KEY);
+        }
 
         return rootView;
     }
@@ -167,6 +175,17 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         forecastAdapter.swapCursor(data);
+        if (position != ListView.INVALID_POSITION) {
+            listView.smoothScrollToPosition(position);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        if (position != ListView.INVALID_POSITION) {
+            outState.putInt(SELECTED_KEY, position);
+        }
+        super.onSaveInstanceState(outState);
     }
 
     @Override

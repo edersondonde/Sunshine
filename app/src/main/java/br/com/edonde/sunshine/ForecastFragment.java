@@ -23,6 +23,7 @@ import android.widget.ListView;
 
 import br.com.edonde.sunshine.data.WeatherContract.LocationEntry;
 import br.com.edonde.sunshine.data.WeatherContract.WeatherEntry;
+import br.com.edonde.sunshine.service.SunshineService;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -115,13 +116,10 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     private void updateWeather() {
-        final FetchWeatherTask fetchWeatherTask =
-                new FetchWeatherTask(getActivity());
-
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String location = sharedPreferences.getString(getString(R.string.pref_location_key),
-                getString(R.string.pref_location_default));
-        fetchWeatherTask.execute(location);
+        Intent intent = new Intent(getActivity(), SunshineService.class);
+        intent.putExtra(SunshineService.LOCATION_QUERY_EXTRA,
+                Utility.getPreferredLocation(getActivity()));
+        getActivity().startService(intent);
     }
 
     @Override

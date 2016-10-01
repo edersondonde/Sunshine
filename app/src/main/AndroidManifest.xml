@@ -40,6 +40,9 @@
         <provider
             android:authorities="br.com.edonde.sunshine"
             android:name="br.com.edonde.sunshine.data.WeatherProvider"/>
+        <service android:name="br.com.edonde.sunshine.service.SunshineService">
+
+        </service>
     </application>
 
 </manifest>

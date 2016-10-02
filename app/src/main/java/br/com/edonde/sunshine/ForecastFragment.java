@@ -23,12 +23,14 @@ import android.widget.ListView;
 
 import br.com.edonde.sunshine.data.WeatherContract.LocationEntry;
 import br.com.edonde.sunshine.data.WeatherContract.WeatherEntry;
-import br.com.edonde.sunshine.service.SunshineService;
+import br.com.edonde.sunshine.sync.SunshineSyncAdapter;
 
 /**
  * A placeholder fragment containing a simple view.
  */
 public class ForecastFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+
+    private final String LOG_TAG = ForecastFragment.class.getSimpleName();
 
     private static final int FORECAST_LOADER = 0;
     private static final String SELECTED_KEY = "selected_position";
@@ -108,18 +110,39 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_refresh) {
+        /*if (id == R.id.action_refresh) {
             updateWeather();
+            return true;
+        }*/
+        if (id == R.id.action_map) {
+            openPreferredLocationInMap();
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
+    private void openPreferredLocationInMap() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String location = preferences.getString(
+                getString(R.string.pref_location_key),
+                getString(R.string.pref_location_default));
+        Uri geoLocation = Uri.parse("geo:0,0").buildUpon()
+                .appendQueryParameter("q", location)
+                .build();
+
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(geoLocation);
+        if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+            startActivity(intent);
+        } else {
+            Log.d(LOG_TAG, "Couldn't call " + location + ", no receiving apps installed!");
+        }
+    }
+
+
+
     private void updateWeather() {
-        Intent intent = new Intent(getActivity(), SunshineService.class);
-        intent.putExtra(SunshineService.LOCATION_QUERY_EXTRA,
-                Utility.getPreferredLocation(getActivity()));
-        getActivity().startService(intent);
+        SunshineSyncAdapter.syncImmediately(getActivity());
     }
 
     @Override
